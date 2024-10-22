@@ -1,66 +1,66 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function checkWinCondition(slots, setWinner) {
+function checkWinCondition(slots) {
   if (slots[0] === "X" && slots[1] === "X" && slots[2] === "X") {
-    setWinner("X");
+    return "X"
   }
   else if (slots[3] === "X" && slots[4] === "X" && slots[5] === "X") {
-    setWinner("X");
+    return "X"
   }
   else if (slots[6] === "X" && slots[7] === "X" && slots[8] === "X") {
-    setWinner("X");
+    return "X"
   }
   else if (slots[0] === "X" && slots[3] === "X" && slots[6] === "X") {
-    setWinner("X");
+    return "X"
   }
   else if (slots[1] === "X" && slots[4] === "X" && slots[7] === "X") {
-    setWinner("X");
+    return "X"
   }
   else if (slots[2] === "X" && slots[5] === "X" && slots[8] === "X") {
-    setWinner("X");
+    return "X"
   }
   else if (slots[0] === "X" && slots[4] === "X" && slots[8] === "X") {
-    setWinner("X");
+    return "X"
   }
   else if (slots[2] === "X" && slots[4] === "X" && slots[6] === "X") {
-    setWinner("X");
+    return "X"
   }
   else if (slots[0] === "O" && slots[1] === "O" && slots[2] === "O") {
-    setWinner("O");
+    return "O"
   }
   else if (slots[3] === "O" && slots[4] === "O" && slots[5] === "O") {
-    setWinner("O");
+    return "O"
   }
   else if (slots[6] === "O" && slots[7] === "O" && slots[8] === "O") {
-    setWinner("O");
+    return "O"
   }
   else if (slots[0] === "O" && slots[3] === "O" && slots[6] === "O") {
-    setWinner("O");
+    return "O"
   }
   else if (slots[1] === "O" && slots[4] === "O" && slots[7] === "O") {
-    setWinner("O");
+    return "O"
   }
   else if (slots[2] === "O" && slots[5] === "O" && slots[8] === "O") {
-    setWinner("O");
+    return "O"
   }
   else if (slots[0] === "O" && slots[4] === "O" && slots[8] === "O") {
-    setWinner("O");
+    return "O"
   }
   else if (slots[2] === "O" && slots[4] === "O" && slots[6] === "O") {
-    setWinner("O");
+    return "O"
   }
 }
 
 function updateSquare(slots, setSlots, index, turn, setTurn) {
   if (slots[index] === " ") {
     const updateSlots = slots.slice();
-    updateSlots[index] = turn;
-    if (turn === "X") {
-      setTurn("O");
+    updateSlots[index] = turn[0];
+    if (turn[0] === "X") {
+      setTurn(["O", +turn[1] + 1]);
     }
     else {
-      setTurn("X");
+      setTurn(["X", +turn[1] + 1]);
     }
     setSlots(updateSlots);
   }
@@ -69,30 +69,21 @@ function updateSquare(slots, setSlots, index, turn, setTurn) {
 function App() {
   const navigate = useNavigate();
   const [slots, setSlots] = useState([" ", " ", " ", " ", " ", " ", " ", " ", " "]);
-  const [turn, setTurn] = useState("X");
-  const [winner, setWinner] = useState("");
-  const index = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-
-  // const toResult = () => {
-    
-  // }
+  const [turn, setTurn] = useState(["X", 0]);
 
   useEffect(() => {
-    checkWinCondition(slots, setWinner);
-  }, [slots]);
-
-  useEffect(() => {
-    if (winner === "X" || winner === "O") {
-      navigate("/result", {state:{winner:winner}});
+    const win = checkWinCondition(slots);
+    if (win === "X" || win === "O" || +turn[1] === 9) {
+      navigate("/result", {state:{winner:win}});
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [winner])
+  }, [turn])
 
   return (
     <div className="h-screen grid grid-cols-3 gap-4 grid-rows-3">
-      {index.map(i => (
-        <button key={i} onClick={() => updateSquare(slots, setSlots, i, turn, setTurn)} className="bg-white text-black p-4 rounded">
-          {slots[i]}
+      {slots.map((slot, index) => (
+        <button key={index} onClick={() => updateSquare(slots, setSlots, index, turn, setTurn)} className="bg-white text-black p-4 rounded text-6xl">
+          {slot}
         </button>))}
     </div>
   );
